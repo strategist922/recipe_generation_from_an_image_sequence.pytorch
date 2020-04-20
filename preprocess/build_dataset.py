@@ -1,12 +1,17 @@
 """
-This script is used for building a dataset for training/testing recipe generation models.
+This script is used for building a dataset and vocabulary for training/testing recipe generation models.
 1. Extracting recipes, which have all steps aligned with images (otherwise, we remove).
 2. According to the [Chandu et al. ACL2020], if there are several images attached to a step, we randomly pick up one.
-3. Dumping them to pickle.
+3. Downloading images
+4. Spliting 8:1:1 (train/val/split)
+5. Building vocabulary using training data
+6. Dumpling data to pickle files
 """
 import argparse
 import json
 import os
+import random
+random.seed(42)
 
 def remove_introduction(context):
     if "introduction" in context[0]["step_title"].lower():
@@ -37,9 +42,26 @@ def dump_to_pickle():
     pass
 
 def build_dataset(args):
+    # Instructables.com
     instructables_filename = os.path.join(args.directory, "instructables.json")
     instructable_recipes = load_and_extract_recipes(instructables_filename)
 
+    # snapguide.com
+    snapguide_filename = os.path.join(args.directory, "snapguide.json")
+    snapguide_recipes = load_and_extract_recipes(snapguide_filename)
+
+    # download images
+    recipes = instructable_recipes + snapguide_recipes
+    download_images(recipes)
+
+    # Split them into 8:1:1
+    
+    
+    # Building vocabulary with training data
+
+    # Saving training, val, test, and vocabulary data.
+    dump_to_pickle()
+    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
