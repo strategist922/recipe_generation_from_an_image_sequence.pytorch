@@ -88,7 +88,11 @@ def convert_data_to_vectors(vocab, recipes, input_dir, output_dir):
     """
     recipes = text2vec(vocab, recipes)
     recipes = image2vec(vocab, input_dir, recipes)
-    return recipes
+
+    for idx, recipe in enumerate(recipes):
+        filename = os.path.join(output_dir, str(idx) + ".pkl")
+        with open(filename, "wb") as f:
+            pickle.dump(recipe, f)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
