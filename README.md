@@ -22,11 +22,11 @@ pip install -r requirements.txt
 The dataset used in this repo is the story boarding dataset (https://www.aclweb.org/anthology/P19-1606.pdf).
 As mentioned [here](https://github.com/khyathiraghavi/storyboarding_data/issues/3), the original scripts did not save the train/val/test splits. Thus, this scripts lead you to download the data from instructable.com and snapguide.com and split them into train/val/test datasets.
 
-### 1. Downloading the story boarding dataset.
+### 1. Downloading the story boarding dataset
 Follow [this repo](https://github.com/misogil0116/story_boarding_data).  
 Then, Copy `instructables.json` and `snapguide.json` to `data/` directory.
 
-### 2. Preprocessing the dataset.
+### 2. Preprocessing the dataset
 The following scripts lead you to split the dataset with train/val/test.
 ```python
 ./make_directory.sh
@@ -36,6 +36,16 @@ python convert_pickles_into_trainable_format.py -d ./data -o ./data/features/
 ```
 
 ## Training and Validation
+Exsisting 5 recipe generation models are divided into two types: scratch models (Images2seq, GLAC Net) and pretraining-based models (SSiD, SSiL, RetAttn).  
+**Note** Training scripts are under construction. Now I only implemented the GLAC Net.
+
+### Scratch models
+Scratch models learn to generate a recipe from random weights. You can train these models as:
+```
+python train.py -m {glacnet/images2seq}
+```
+
+### Pretraining-based models
 
 ## Testing
 

@@ -25,22 +25,19 @@ def evaluate(model, batch_size, vocab):
     model.eval()
     pad_num = vocab_size - 1
 
-    dataset = StoryBoardingDataset(input_dir=os.path.join(directory, "val"))
+    dataset = StoryBoardingDataset(input_dir=os.path.join(directory, "features/val"))
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, collate_fn=collate_fn)
     val_loss = 0
     count_c = 0
 
     for i, sample_batched in enumerate(dataloader):
-        try:
-            step_vectors, image_vectors = sample_batched["step_vectors"], sample_batched["image_vectors"]
-            batch_image_vectors, batch_step_vectors = batchfy(image_vectors, step_vectors, pad_num)
-            sent_output = model(batch_step_vectors, batch_image_vectors, ingredient_vectors, pad_num)
-            mask = calculate_mask(batch_step_vectors, vocab)
-            loss = calculate_mask_NLL_loss(sent_output, batch_step_vectors, mask)
-            val_loss += loss.item()
-            count_c += 1
-        except:
-            continue
+        step_vectors, image_vectors = sample_batched["step_vectors"], sample_batched["image_vectors"]
+        batch_image_vectors, batch_step_vectors = batchfy(image_vectors, step_vectors, pad_num)
+        sent_output = model(batch_step_vectors, batch_image_vectors, pad_num)
+        mask = calculate_mask(batch_step_vectors, vocab)
+        loss = calculate_mask_NLL_loss(sent_output, batch_step_vectors, mask)
+        val_loss += loss.item()
+        count_c += 1
     val_loss = val_loss/count_c
     return val_loss
 
