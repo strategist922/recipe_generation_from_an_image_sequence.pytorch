@@ -8,7 +8,7 @@ Now we implemented the following 5 models:
 - SSiL (https://www.aclweb.org/anthology/P19-1606.pdf)    
 **Note** We could not implement the SSiD and SSiL perfectly due to lack of details of a finite state machine (FSM).
 
-# Requirements
+## Requirements
 1. Python 3.7
 2. CUDA 10.2 and cuDNN v7.6
 3. PyTorch 1.5.0
@@ -17,7 +17,7 @@ Now we implemented the following 5 models:
 pip install -r requirements.txt
 ```
 
-# Data Preparation
+## Data Preparation
 The dataset used in this repo is the story boarding dataset (https://www.aclweb.org/anthology/P19-1606.pdf).
 As mentioned [here](https://github.com/khyathiraghavi/storyboarding_data/issues/3), the original scripts did not save the train/val/test splits. Thus, this scripts lead you to download the data from instructable.com and snapguide.com and split them into train/val/test datasets.
 
@@ -28,19 +28,17 @@ Then, Copy `instructables.json` and `snapguide.json` to `data/` directory.
 ### 2. Preprocessing the dataset.
 The following scripts lead you to split the dataset with train/val/test.
 ```python
+./make_directory.sh
 cd preprocess
 python build_dataset.py -d ./data/ --dl
 python convert_pickles_into_trainable_format.py -d ./data -o ./data/features/
 ```
 
-### 3. Training the models.  
-[WIP]
+## Training and Validation
 
-# Training and Validation
+## Testing
 
-# Testing
-
-# Citation
+## Citation
 ```
 @misc{taichi19recipe,
     author = {Taichi Nishimura},
