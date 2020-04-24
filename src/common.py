@@ -19,3 +19,23 @@ def calculate_mask_NLL_loss(sentence_outputs, step_vector, mask):
     losses = losses * mask.float()
     loss = losses.sum() / mask.float().sum()
     return loss
+
+# Generating Recipes
+class RecipeGenerator:
+    def __init__(self, model):
+        self.model = model
+    
+    def generate(self, test_file):
+        """
+        Generate a recipe w/ the model
+        """
+        pass
+
+# Evaluation
+class RecipeEvaluator:
+    def __init__(self, generated_recipes, reference_recipes):
+        self.generated_recipes = generated_recipes
+        self.reference_recipes = reference_recipes
+
+    def evaluate(self):
+        pass

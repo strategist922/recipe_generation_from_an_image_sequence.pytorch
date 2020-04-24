@@ -79,14 +79,6 @@ class BatchGLACNet(nn.Module):
         cell_state = torch.zeros((batch_size, self.dec_hidden_size)).to(device)
         return hidden_state, cell_state
 
-    def forward_ingredient(self, batch_ingredient_vectors):
-        batch_ingredient_outputs = torch.zeros((len(batch_ingredient_vectors), self.ingr_hidden_size)).to(device)
-        for ingr_idx, batch_ingredient_vector in enumerate(batch_ingredient_vectors):
-            batch_ingredient_vector = [torch.Tensor(ingredient_vec).to(device) for ingredient_vec in batch_ingredient_vector]
-            output = self.ingredient_lstm(batch_ingredient_vector)
-            batch_ingredient_outputs[ingr_idx] = output
-        return batch_ingredient_outputs
-
     def forward(self, batched_step_vectors, batched_image_vectors, pad_num):
         # 1. 画像からの特徴抽出
         batch_size, seq_length, max_T = batched_step_vectors.shape
@@ -137,22 +129,20 @@ class BatchGLACNet(nn.Module):
         _, eos_index = torch.max(eos_location, 1)
         return eos_index
 
-    def predict(self, images, ingredient_vector, vocab):
+    def predict(self, images, vocab):
         max_length = 100
         sent_outputs = []
         hidden_state, cell_state = self.init_hidden(batch_size=1)
         image_vectors, _ = self.encoder(images.unsqueeze(0))
         image_vectors = image_vectors.squeeze(0)
         start_vec = torch.zeros((1, self.embed_size)).to(device)
-        ingredient_vector = self.forward_ingredient([ingredient_vector])
 
         for image_vector in image_vectors:
             prev_vec = None
             sent_output = []
             for len_idx in range(max_length):
                 if len_idx == 0:
-                    input = torch.cat((start_vec, image_vector.unsqueeze(0), ingredient_vector), dim=1)
-                    input = self.dropout(F.relu(self.firstMLP(input))) # +Ingr
+                    input = torch.cat((start_vec, image_vector.unsqueeze(0)), dim=1)
                     hidden_state, cell_state = self.lstm(input, (hidden_state, cell_state))
                 else:
                     embedded = self.embed(prev_vec)

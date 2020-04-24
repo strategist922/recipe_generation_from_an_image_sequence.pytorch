@@ -46,8 +46,10 @@ python train.py -m {glacnet/images2seq}
 ```
 
 ### Pretraining-based models
+[WIP]
 
 ## Testing
+[WIP]
 
 ## Citation
 ```
