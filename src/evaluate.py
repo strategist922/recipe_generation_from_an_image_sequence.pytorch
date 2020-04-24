@@ -6,7 +6,7 @@ import torch
 sys.path.append("../utils")
 
 from vocabulary import Vocabulary
-from common import *
+from common import RecipeGenerator, RecipeEvaluator
 from models.glacnet import BatchGLACNet
 
 USE_CUDA = torch.cuda.is_available()
@@ -49,25 +49,14 @@ if __name__ == "__main__":
     model.to(device)
     model.eval()
 
+    generator = RecipeGenerator(model, vocab)
     generated_recipes = []
     refer_recipes = []
-    for test_file in test_files[:100]:
-        gen, refer = get_outputs(test_file, model, vocab)
+
+    for test_file in test_files:
+        gen, refer = generator.generate(test_file)
         generated_recipes.append(gen)
         refer_recipes.append(refer)
-    
-    import ipdb; ipdb.set_trace()
 
-    bleu1, bleu2, bleu3, bleu4 = calculate_BLEU(generated_recipes, refer_recipes)
-    refer_recipes = [refer_recipe[0] for refer_recipe in refer_recipes]
-    r_score = calculate_rouge(generated_recipes, refer_recipes)
-    cider_D = calculate_CIDEr(generated_recipes, refer_recipes)
-    meteor = calculate_METEOR(generated_recipes, refer_recipes)
-
-    print("BLEU-1 : ", bleu1)
-    print("BLEU-2 : ", bleu2)
-    print("BLEU-3 : ", bleu3)
-    print("BLEU-4 : ", bleu4)
-    print("ROUGE-L : ", r_score)
-    print("CIDEr-D : ", cider_D)
-    print("METEOR : ", meteor)
+    evaluator = RecipeEvaluator(generated_recipes, refer_recipes)
+    evaluator.evaluate()
