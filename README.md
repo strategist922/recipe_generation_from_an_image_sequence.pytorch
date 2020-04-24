@@ -13,7 +13,7 @@ Now we implemented the following 5 models:
 1. Python 3.7
 2. CUDA 10.2 and cuDNN v7.6
 3. PyTorch 1.5.0
-4. tall other required modules  
+4. install other required modules  
 ```
 pip install -r requirements.txt
 ```
