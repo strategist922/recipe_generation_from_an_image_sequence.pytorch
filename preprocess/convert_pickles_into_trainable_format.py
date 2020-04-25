@@ -49,34 +49,45 @@ def image_pickup_an_image_randomly(files):
     return choosen_file[1]
 
 def extract_feature_vector(cnn_model, filename):
-    transformer = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-    ])
-    image = Image.open(filename)
-    image = transformer(image)
-    image_vector = cnn_model(image.unsqueeze(0))
-    return image_vector.flatten()
+    try:
+        transformer = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+        image = Image.open(filename)
+        image = transformer(image)
+        image_vector = cnn_model(image.unsqueeze(0))
+        return image_vector.flatten()
+    except:
+        return None
 
 def image2vec(vocab, input_dir, recipes):
     cnn_model = models.resnet34(pretrained=True)
     cnn_model = nn.Sequential(*list(cnn_model.children())[:-1])
     cnn_model.eval()
-
     image_root_dir = os.path.join(input_dir, "images")
+    out_recipes = [] 
     for recipe in tqdm(recipes):
         context = recipe["context"]
         image_vectors = np.zeros((len(context), IMAGE_DIMENSION_SIZE))
+        is_image_ok = True
         for idx, step in enumerate(context):
             filename = image_pickup_an_image_randomly(step["step_images"])
             filename = os.path.join(image_root_dir, filename)
             
             # convert image into feature vector w/ ResNet34
             image_feature = extract_feature_vector(cnn_model, filename)
+            if image_feature is None:
+                is_image_ok = False
+                break
             image_vectors[idx] = image_feature.detach().numpy()
-    return image_vectors
+        
+        if is_image_ok:
+            recipe["image_vector"] = image_vectors
+            out_recipes.append(recipe)
+    return out_recipes
 
 def convert_data_to_vectors(vocab, recipes, input_dir, output_dir):
     """

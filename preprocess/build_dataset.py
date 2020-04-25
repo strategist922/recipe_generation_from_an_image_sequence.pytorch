@@ -111,6 +111,8 @@ def build_dataset(args):
     # snapguide.com
     snapguide_filename = os.path.join(args.directory, "snapguide.json")
     snapguide_recipes = load_and_extract_recipes(snapguide_filename)
+    
+    import ipdb; ipdb.set_trace()
 
     # download images
     recipes = instructable_recipes + snapguide_recipes
