@@ -6,6 +6,7 @@ Now we implemented the following 5 models:
 - Retrieval Attention (RetAttn) (https://www.aclweb.org/anthology/W19-8650.pdf)
 - SSiD (https://www.aclweb.org/anthology/P19-1606.pdf)
 - SSiL (https://www.aclweb.org/anthology/P19-1606.pdf)    
+
 **Note** We could not implement the SSiD and SSiL perfectly due to lack of details of a finite state machine (FSM).
 
 ## Requirements
